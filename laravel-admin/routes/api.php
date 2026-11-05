@@ -3,4 +3,4 @@
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/hello', [UserController::class, 'index']);
+Route::get('/users', [UserController::class, 'index']);
