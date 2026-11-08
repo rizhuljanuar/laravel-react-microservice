@@ -10,22 +10,29 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     public function index()
     {
+        Gate::authorize('view', 'users');
+
         return UserResource::collection(User::with('role')->paginate());
     }
 
     public function show(string $id)
     {
+        Gate::authorize('view', 'users');
+
         return new UserResource(User::with('role')->find($id));
     }
 
     public function store(UserCreateRequest $request)
     {
+        Gate::authorize('edit', 'users');
+
         $user = User::create($request->only('first_name', 'last_name', 'email', 'role_id') + [
             'password' => Hash::make('1234'),
         ]);
@@ -35,6 +42,8 @@ class UserController extends Controller
 
     public function update(UserUpdateRequest $request, string $id)
     {
+        Gate::authorize('edit', 'users');
+
         $user = User::find($id);
 
         $user->update($request->only('first_name', 'last_name', 'email', 'role_id'));
@@ -44,6 +53,8 @@ class UserController extends Controller
 
     public function destroy(string $id)
     {
+        Gate::authorize('edit', 'users');
+
         $user = User::destroy($id);
 
         return response()->json(new UserResource($user), 204);
