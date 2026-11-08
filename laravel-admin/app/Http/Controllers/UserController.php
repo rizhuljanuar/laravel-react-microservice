@@ -6,6 +6,7 @@ use App\Http\Requests\UpdateInfoRequest;
 use App\Http\Requests\UpdatePasswordRequest;
 use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserUpdateRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,17 +16,17 @@ class UserController extends Controller
 {
     public function index()
     {
-        return User::paginate();
+        return UserResource::collection(User::with('role')->paginate());
     }
 
     public function show(string $id)
     {
-        return User::find($id);
+        return new UserResource(User::with('role')->find($id));
     }
 
     public function store(UserCreateRequest $request)
     {
-        $user = User::create($request->only('first_name', 'last_name', 'email') + [
+        $user = User::create($request->only('first_name', 'last_name', 'email', 'role_id') + [
             'password' => Hash::make('1234'),
         ]);
 
@@ -36,16 +37,16 @@ class UserController extends Controller
     {
         $user = User::find($id);
 
-        $user->update($request->only('first_name', 'last_name', 'email'));
+        $user->update($request->only('first_name', 'last_name', 'email', 'role_id'));
 
-        return response()->json($user, 202);
+        return response()->json(new UserResource($user), 202);
     }
 
     public function destroy(string $id)
     {
-        User::destroy($id);
+        $user = User::destroy($id);
 
-        return response()->json(null, 204);
+        return response()->json(new UserResource($user), 204);
     }
 
     public function user(Request $request)
