@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\AddTokenFromCookie;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -14,7 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->append(AddTokenFromCookie::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (AuthorizationException $e) {

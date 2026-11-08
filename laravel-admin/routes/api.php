@@ -23,6 +23,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/chart', [DashboardController::class, 'chart']);
 
     Route::post('/upload', [ImageController::class, 'upload']);
+        Route::post('/logout', [OAuthController::class, 'logout']);
 });
 
 Route::post('/login', [OAuthController::class, 'login']);
