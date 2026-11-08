@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\RoleResource;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RoleController extends Controller
 {
@@ -12,16 +14,25 @@ class RoleController extends Controller
         return Role::all();
     }
 
+    public function show(string $id)
+    {
+        return Role::find($id);
+    }
+
     public function store(Request $request)
     {
         $role = Role::create(['name' => $request->input('name')]);
 
-        return response()->json($role, 201);
-    }
+        if ($permissions = $request->input('permissions')) {
+            foreach ($permissions as $permission) {
+                DB::table('role_permission')->insert([
+                    'role_id'       => $role->id,
+                    'permission_id' => $permission,
+                ]);
+            }
+        }
 
-    public function show(string $id)
-    {
-        return Role::find($id);
+        return response()->json(new RoleResource($role), 201);
     }
 
     public function update(Request $request, string $id)
@@ -30,11 +41,24 @@ class RoleController extends Controller
 
         $role->update($request->only('name'));
 
-        return response()->json($role, 202);
+        DB::table('role_permission')->where('role_id', $role->id)->delete();
+
+        if ($permissions = $request->input('permissions')) {
+            foreach ($permissions as $permission) {
+                DB::table('role_permission')->insert([
+                    'role_id'       => $role->id,
+                    'permission_id' => $permission,
+                ]);
+            }
+        }
+
+        return response()->json(new RoleResource($role), 202);
     }
 
     public function destroy(string $id)
     {
+        DB::table('role_permission')->where('role_id', $id)->delete();
+
         Role::destroy($id);
 
         return response()->json(null, 204);
