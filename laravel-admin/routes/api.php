@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\OAuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
@@ -13,6 +14,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('users', UserController::class);
     Route::apiResource('roles', RoleController::class);
     Route::apiResource('products', ProductController::class);
+
+    Route::post('/upload', [ImageController::class, 'upload']);
 });
 
 Route::post('/login', [OAuthController::class, 'login']);
