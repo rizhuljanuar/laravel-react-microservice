@@ -20,6 +20,7 @@ class OrderResource extends JsonResource
             'last_name'   => $this->last_name,
             'email'       => $this->email,
             'order_items' => OrderItemResource::collection($this->orderItems),
+            'total'       => $this->total,
         ];
     }
 }
