@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\OAuthController;
 use App\Http\Controllers\OrderController;
@@ -19,6 +20,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('orders', OrderController::class)->only(['index', 'show']);
     Route::apiResource('permissions', PermissionController::class)->only(['index']);
     Route::get('/export', [OrderController::class, 'export']);
+    Route::get('/chart', [DashboardController::class, 'chart']);
 
     Route::post('/upload', [ImageController::class, 'upload']);
 });
