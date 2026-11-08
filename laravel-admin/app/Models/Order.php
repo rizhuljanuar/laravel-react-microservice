@@ -21,4 +21,9 @@ class Order extends Model
             fn ($item) => $item->price * $item->quantity
         ));
     }
+
+    protected function name(): Attribute
+    {
+        return Attribute::get(fn () => $this->first_name . ' ' . $this->last_name);
+    }
 }

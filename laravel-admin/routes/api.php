@@ -16,6 +16,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('roles', RoleController::class);
     Route::apiResource('products', ProductController::class);
     Route::apiResource('orders', OrderController::class)->only(['index', 'show']);
+    Route::get('/export', [OrderController::class, 'export']);
 
     Route::post('/upload', [ImageController::class, 'upload']);
 });
