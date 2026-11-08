@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -27,6 +28,7 @@ class UserFactory extends Factory
             'last_name'  => fake()->lastName(),
             'email'      => fake()->unique()->safeEmail(),
             'password'   => 'password',
+            'role_id'    => Role::inRandomOrder()->first()->id,
         ];
     }
 
