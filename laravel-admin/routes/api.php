@@ -9,3 +9,4 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 });
 
 Route::post('/login', [OAuthController::class, 'login']);
+Route::post('/register', [OAuthController::class, 'register']);
