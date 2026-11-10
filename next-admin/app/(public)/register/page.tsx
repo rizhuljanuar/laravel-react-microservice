@@ -1,38 +1,35 @@
 'use client';
 
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export default function RegisterPage() {
+  const router = useRouter();
+
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
-  const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setMessage('');
     setError('');
     setIsSubmitting(true);
 
     try {
-      const response = await axios.post(
-        'http://localhost:8000/api/register',
-        {
-          first_name: firstName,
-          last_name: lastName,
-          email,
-          password,
-          password_confirm: passwordConfirm,
-        },
-      );
+      await axios.post('http://localhost:8000/api/register', {
+        first_name: firstName,
+        last_name: lastName,
+        email,
+        password,
+        password_confirm: passwordConfirm,
+      });
 
-      console.log(response.data);
-      setMessage('Registration successful.');
+      router.push('/login');
     } catch (requestError) {
       if (axios.isAxiosError(requestError)) {
         const serverMessage =
@@ -123,7 +120,6 @@ export default function RegisterPage() {
           </label>
         </div>
 
-        {message && <p className="text-success">{message}</p>}
         {error && <p className="text-danger">{error}</p>}
 
         <button
