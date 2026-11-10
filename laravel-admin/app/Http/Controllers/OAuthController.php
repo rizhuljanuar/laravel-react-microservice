@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterRequest;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,8 +28,17 @@ class OAuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
+        $viewer = Role::where('name', 'viewer')->first();
+
+        if (! $viewer) {
+            return response()->json([
+                'message' => 'The default role is not configured.',
+            ], 500);
+        }
+
         $user = User::create($request->only('first_name', 'last_name', 'email') + [
             'password' => Hash::make($request->input('password')),
+            'role_id' => $viewer->id,
         ]);
 
         return response()->json($user, 201);

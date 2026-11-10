@@ -1,5 +1,6 @@
 'use client';
 
+import axios from 'axios';
 import { useState } from 'react';
 
 export default function RegisterPage() {
@@ -8,17 +9,41 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const submit = (e: React.FormEvent<HTMLFormElement>) => {
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setMessage('');
+    setError('');
+    setIsSubmitting(true);
 
-    console.log({
-      first_name: firstName,
-      last_name: lastName,
-      email,
-      password,
-      password_confirm: passwordConfirm,
-    });
+    try {
+      const response = await axios.post(
+        'http://localhost:8000/api/register',
+        {
+          first_name: firstName,
+          last_name: lastName,
+          email,
+          password,
+          password_confirm: passwordConfirm,
+        },
+      );
+
+      console.log(response.data);
+      setMessage('Registration successful.');
+    } catch (requestError) {
+      if (axios.isAxiosError(requestError)) {
+        const serverMessage =
+          requestError.response?.data?.message ?? 'Registration failed.';
+        setError(serverMessage);
+      } else {
+        setError('An unexpected error occurred.');
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -98,8 +123,15 @@ export default function RegisterPage() {
           </label>
         </div>
 
-        <button className="btn btn-primary w-100 py-2" type="submit">
-          Register
+        {message && <p className="text-success">{message}</p>}
+        {error && <p className="text-danger">{error}</p>}
+
+        <button
+          className="btn btn-primary w-100 py-2"
+          type="submit"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'Registering...' : 'Register'}
         </button>
 
         <p className="mt-5 mb-3 text-body-secondary">© 2017–2026</p>
