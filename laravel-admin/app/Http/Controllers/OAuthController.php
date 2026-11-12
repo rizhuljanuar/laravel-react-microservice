@@ -44,7 +44,7 @@ class OAuthController extends Controller
         return response()->json($user, 201);
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
 
