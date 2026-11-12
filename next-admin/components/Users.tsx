@@ -3,8 +3,8 @@
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import api from '../lib/api';
-import { User } from '../types';
+import { User } from '@/app/types';
+import api from '@/lib/api';
 
 const Users = () => {
   const router = useRouter();
@@ -83,7 +83,22 @@ const Users = () => {
                   <td>{user.last_name}</td>
                   <td>{user.email}</td>
                   <td>{user.role?.name}</td>
-                  <td>Edit | Delete</td>
+                  <td>
+                    <div className="btn-group" role="group">
+                      <button
+                        className="btn btn-outline-primary btn-sm"
+                        type="button"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="btn btn-outline-danger btn-sm"
+                        type="button"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
                 </tr>
               );
             })}

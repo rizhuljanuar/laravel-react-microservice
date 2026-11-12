@@ -3,6 +3,11 @@ export interface Role {
   name: string;
 }
 
+export interface Permission {
+  id: number;
+  name: string;
+}
+
 export interface User {
   id: number;
   first_name: string;
