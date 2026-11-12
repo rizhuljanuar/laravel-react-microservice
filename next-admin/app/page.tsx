@@ -1,17 +1,5 @@
-import Dashboard from "@/components/Dashboard";
-import Menu from "@/components/Menu";
-import Navigation from "@/components/Navigation";
+import { redirect } from 'next/navigation';
 
 export default function Page() {
-  return (
-    <>
-      <Navigation />
-      <div className="container-fluid">
-        <div className="row">
-          <Menu />
-          <Dashboard />
-        </div>
-      </div>
-    </>
-  );
+  redirect('/dashboard');
 }
