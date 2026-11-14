@@ -3,8 +3,8 @@
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { User } from '@/app/types';
 import api from '@/lib/api';
+import { User } from '@/app/types';
 
 const Users = () => {
   const router = useRouter();
@@ -41,6 +41,34 @@ const Users = () => {
       }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const del = async (id: number) => {
+    if (!window.confirm('Are you sure you want to delete this record?')) {
+      return;
+    }
+
+    try {
+      await api.delete(`/users/${id}`);
+
+      setUsers(users.filter((user) => user.id !== id));
+    } catch (requestError) {
+      if (
+        axios.isAxiosError(requestError) &&
+        requestError.response?.status === 401
+      ) {
+        router.push('/login');
+        return;
+      }
+
+      if (axios.isAxiosError(requestError)) {
+        const serverMessage =
+          requestError.response?.data?.message ?? 'Failed to delete user.';
+        setError(serverMessage);
+      } else {
+        setError('Failed to delete user.');
+      }
     }
   };
 
@@ -98,6 +126,7 @@ const Users = () => {
                         <button
                           className="btn btn-outline-danger btn-sm"
                           type="button"
+                          onClick={() => del(user.id)}
                         >
                           Delete
                         </button>
