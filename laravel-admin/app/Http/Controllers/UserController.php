@@ -55,9 +55,9 @@ class UserController extends Controller
     {
         Gate::authorize('edit', 'users');
 
-        $user = User::destroy($id);
+        User::destroy($id);
 
-        return response()->json(new UserResource($user), 204);
+        return response()->json(null, 204);
     }
 
     public function user(Request $request)
