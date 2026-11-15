@@ -11,6 +11,8 @@ const Orders = () => {
   const router = useRouter();
 
   const [error, setError] = useState('');
+  const [exportError, setExportError] = useState('');
+  const [isExporting, setIsExporting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [orders, setOrders] = useState<Order[]>([]);
 
@@ -42,6 +44,43 @@ const Orders = () => {
     }
   };
 
+  const handleExport = async () => {
+    setExportError('');
+    setIsExporting(true);
+
+    try {
+      const response = await api.get('/export', { responseType: 'blob' });
+
+      const blob = new Blob([response.data], { type: 'text/csv' });
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = 'orders.csv';
+      link.click();
+
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (requestError) {
+      if (
+        axios.isAxiosError(requestError) &&
+        requestError.response?.status === 401
+      ) {
+        router.push('/login');
+        return;
+      }
+
+      if (axios.isAxiosError(requestError)) {
+        const serverMessage =
+          requestError.response?.data?.message ?? 'Failed to export orders.';
+        setExportError(serverMessage);
+      } else {
+        setExportError('Failed to export orders.');
+      }
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   useEffect(() => {
     loadOrders();
   }, []);
@@ -61,6 +100,23 @@ const Orders = () => {
             Try again
           </button>
         </div>
+      )}
+
+      {exportError && (
+        <div className="alert alert-danger" role="alert">
+          {exportError}
+        </div>
+      )}
+
+      {!isLoading && (
+        <button
+          className="btn btn-outline-primary btn-sm mb-3"
+          disabled={isExporting}
+          onClick={handleExport}
+          type="button"
+        >
+          {isExporting ? 'Exporting...' : 'Export'}
+        </button>
       )}
 
       {!isLoading && !error && (
