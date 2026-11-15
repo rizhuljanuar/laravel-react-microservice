@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import api from '@/lib/api';
+import Paginator from './Paginator';
 import { User } from '@/app/types';
 
 
@@ -144,34 +145,12 @@ const Users = () => {
             </tbody>
           </table>
 
-          <nav>
-            <ul className="pagination">
-              <li className={page === 1 ? 'page-item disabled' : 'page-item'}>
-                <button
-                  className="page-link"
-                  type="button"
-                  onClick={() => setPage(page - 1)}
-                  disabled={page === 1}
-                >
-                  Previous
-                </button>
-              </li>
-              <li
-                className={
-                  page === lastPage ? 'page-item disabled' : 'page-item'
-                }
-              >
-                <button
-                  className="page-link"
-                  type="button"
-                  onClick={() => setPage(page + 1)}
-                  disabled={page === lastPage}
-                >
-                  Next
-                </button>
-              </li>
-            </ul>
-          </nav>
+
+          <Paginator
+            lastPage={lastPage}
+            onPageChange={setPage}
+            page={page}
+          />
         </>
       )}
     </div>
