@@ -1,10 +1,11 @@
 'use client';
 
-import { Product } from '@/app/types';
-import api from '@/lib/api';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import api from '../lib/api';
+import { Product } from '@/app/types';
+import Delete from './Delete';
 
 const Products = () => {
   const router = useRouter();
@@ -41,32 +42,8 @@ const Products = () => {
     }
   };
 
-  const del = async (id: number) => {
-    if (!window.confirm('Are you sure you want to delete this record?')) {
-      return;
-    }
-
-    try {
-      await api.delete(`/products/${id}`);
-
-      setProducts(products.filter((product) => product.id !== id));
-    } catch (requestError) {
-      if (
-        axios.isAxiosError(requestError) &&
-        requestError.response?.status === 401
-      ) {
-        router.push('/login');
-        return;
-      }
-
-      if (axios.isAxiosError(requestError)) {
-        const serverMessage =
-          requestError.response?.data?.message ?? 'Failed to delete product.';
-        setError(serverMessage);
-      } else {
-        setError('Failed to delete product.');
-      }
-    }
+  const handleDelete = (id: number) => {
+    setProducts(products.filter((product) => product.id !== id));
   };
 
   useEffect(() => {
@@ -117,13 +94,12 @@ const Products = () => {
                   <td>{product.description}</td>
                   <td>{product.price}</td>
                   <td>
-                    <button
-                      className="btn btn-outline-danger btn-sm"
-                      type="button"
-                      onClick={() => del(product.id)}
-                    >
-                      Delete
-                    </button>
+                    <Delete
+                      endpoint="products"
+                      id={product.id}
+                      onError={setError}
+                      onDelete={handleDelete}
+                    />
                   </td>
                 </tr>
               );

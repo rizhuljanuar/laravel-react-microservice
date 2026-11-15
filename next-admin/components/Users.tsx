@@ -5,9 +5,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import api from '@/lib/api';
-import Paginator from './Paginator';
 import { User } from '@/app/types';
-
+import Delete from './Delete';
+import Paginator from './Paginator';
 
 const Users = () => {
   const router = useRouter();
@@ -47,32 +47,8 @@ const Users = () => {
     }
   };
 
-  const del = async (id: number) => {
-    if (!window.confirm('Are you sure you want to delete this record?')) {
-      return;
-    }
-
-    try {
-      await api.delete(`/users/${id}`);
-
-      setUsers(users.filter((user) => user.id !== id));
-    } catch (requestError) {
-      if (
-        axios.isAxiosError(requestError) &&
-        requestError.response?.status === 401
-      ) {
-        router.push('/login');
-        return;
-      }
-
-      if (axios.isAxiosError(requestError)) {
-        const serverMessage =
-          requestError.response?.data?.message ?? 'Failed to delete user.';
-        setError(serverMessage);
-      } else {
-        setError('Failed to delete user.');
-      }
-    }
+  const handleDelete = (id: number) => {
+    setUsers(users.filter((user) => user.id !== id));
   };
 
   useEffect(() => {
@@ -130,13 +106,12 @@ const Users = () => {
                         >
                           Edit
                         </Link>
-                        <button
-                          className="btn btn-outline-danger btn-sm"
-                          type="button"
-                          onClick={() => del(user.id)}
-                        >
-                          Delete
-                        </button>
+                        <Delete
+                          endpoint="users"
+                          id={user.id}
+                          onError={setError}
+                          onDelete={handleDelete}
+                        />
                       </div>
                     </td>
                   </tr>
@@ -144,7 +119,6 @@ const Users = () => {
               })}
             </tbody>
           </table>
-
 
           <Paginator
             lastPage={lastPage}

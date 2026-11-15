@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import api from '@/lib/api';
 import { Role } from '@/app/types';
+import Delete from './Delete';
 
 const Roles = () => {
   const router = useRouter();
@@ -42,32 +43,8 @@ const Roles = () => {
     }
   };
 
-  const del = async (id: number) => {
-    if (!window.confirm('Are you sure you want to delete this record?')) {
-      return;
-    }
-
-    try {
-      await api.delete(`/roles/${id}`);
-
-      setRoles(roles.filter((role) => role.id !== id));
-    } catch (requestError) {
-      if (
-        axios.isAxiosError(requestError) &&
-        requestError.response?.status === 401
-      ) {
-        router.push('/login');
-        return;
-      }
-
-      if (axios.isAxiosError(requestError)) {
-        const serverMessage =
-          requestError.response?.data?.message ?? 'Failed to delete role.';
-        setError(serverMessage);
-      } else {
-        setError('Failed to delete role.');
-      }
-    }
+  const handleDelete = (id: number) => {
+    setRoles(roles.filter((role) => role.id !== id));
   };
 
   useEffect(() => {
@@ -119,13 +96,12 @@ const Roles = () => {
                         >
                           Edit
                         </Link>
-                        <button
-                          className="btn btn-outline-danger btn-sm"
-                          type="button"
-                          onClick={() => del(role.id)}
-                        >
-                          Delete
-                        </button>
+                        <Delete
+                          endpoint="roles"
+                          id={role.id}
+                          onError={setError}
+                          onDelete={handleDelete}
+                        />
                       </div>
                     </td>
                   </tr>
