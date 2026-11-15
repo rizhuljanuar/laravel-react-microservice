@@ -33,6 +33,18 @@ const Menu = () => {
             Users
           </Link>
         </li>
+        <li className="nav-item">
+          <Link
+            className={
+              pathname === '/roles'
+                ? 'nav-link active'
+                : 'nav-link text-muted'
+            }
+            href="/roles"
+          >
+            Roles
+          </Link>
+        </li>
       </ul>
     </nav>
   );
