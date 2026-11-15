@@ -21,7 +21,7 @@ class RoleController extends Controller
     {
         Gate::authorize('view', 'roles');
 
-        return Role::find($id);
+        return new RoleResource(Role::find($id));
     }
 
     public function store(Request $request)
