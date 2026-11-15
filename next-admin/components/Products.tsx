@@ -99,6 +99,7 @@ const Products = () => {
                     </td>
                     <td>{product.description}</td>
                     <td>{product.price}</td>
+                    <td>
                       <div className="btn-group" role="group">
                         <Link
                           className="btn btn-outline-primary btn-sm"
@@ -113,6 +114,7 @@ const Products = () => {
                           onDelete={handleDelete}
                         />
                       </div>
+                    </td>
                   </tr>
                 );
               })}

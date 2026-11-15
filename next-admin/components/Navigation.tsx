@@ -25,6 +25,15 @@ const Navigation = () => {
     };
 
     loadData();
+
+    // Profile tidak bisa menyentuh state di sini; sinyal ini satu-satunya jalan
+    // sebelum Redux memasang gudang bersama di lesson 67 dan 68.
+    const reload = () => {
+      void loadData();
+    };
+
+    window.addEventListener('user-updated', reload);
+    return () => window.removeEventListener('user-updated', reload);
   }, []);
 
   const logout = async () => {
