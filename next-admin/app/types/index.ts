@@ -40,3 +40,8 @@ export interface Order {
   total: number;
   order_items: unknown[];
 }
+
+export interface ChartRecord {
+  date: string;
+  sum: number;
+}
