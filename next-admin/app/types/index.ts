@@ -16,3 +16,11 @@ export interface User {
   email: string;
   role: Role;
 }
+
+export interface Product {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  price: number;
+}

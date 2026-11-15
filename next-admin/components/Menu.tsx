@@ -45,6 +45,18 @@ const Menu = () => {
             Roles
           </Link>
         </li>
+        <li className="nav-item">
+          <Link
+            className={
+              pathname === '/products'
+                ? 'nav-link active'
+                : 'nav-link text-muted'
+            }
+            href="/products"
+          >
+            Products
+          </Link>
+        </li>
       </ul>
     </nav>
   );
