@@ -123,12 +123,12 @@ const Users = () => {
                     <td>{user.role?.name}</td>
                     <td>
                       <div className="btn-group" role="group">
-                        <button
+                        <Link
                           className="btn btn-outline-primary btn-sm"
-                          type="button"
+                          href={`/users/${user.id}/edit`}
                         >
                           Edit
-                        </button>
+                        </Link>
                         <button
                           className="btn btn-outline-danger btn-sm"
                           type="button"
