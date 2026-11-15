@@ -99,14 +99,20 @@ const Products = () => {
                     </td>
                     <td>{product.description}</td>
                     <td>{product.price}</td>
-                    <td>
-                      <Delete
-                        endpoint="products"
-                        id={product.id}
-                        onError={setError}
-                        onDelete={handleDelete}
-                      />
-                    </td>
+                      <div className="btn-group" role="group">
+                        <Link
+                          className="btn btn-outline-primary btn-sm"
+                          href={`/products/${product.id}/edit`}
+                        >
+                          Edit
+                        </Link>
+                        <Delete
+                          endpoint="products"
+                          id={product.id}
+                          onError={setError}
+                          onDelete={handleDelete}
+                        />
+                      </div>
                   </tr>
                 );
               })}
