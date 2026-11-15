@@ -6,6 +6,7 @@ import { FormEvent, useEffect, useState } from 'react';
 import api from '@/lib/api';
 import { Role } from '@/app/types';
 
+
 const UserEdit = ({ id }: { id: number }) => {
   const router = useRouter();
 
@@ -13,6 +14,7 @@ const UserEdit = ({ id }: { id: number }) => {
   const [error, setError] = useState('');
   const [firstName, setFirstName] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [lastName, setLastName] = useState('');
   const [roleId, setRoleId] = useState(0);
   const [roles, setRoles] = useState<Role[]>([]);
@@ -54,8 +56,39 @@ const UserEdit = ({ id }: { id: number }) => {
     loadData();
   }, [id]);
 
-  const submit = (event: FormEvent<HTMLFormElement>) => {
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setError('');
+    setIsSubmitting(true);
+
+    try {
+      await api.put(`/users/${id}`, {
+        first_name: firstName,
+        last_name: lastName,
+        email: email,
+        role_id: roleId,
+      });
+
+      router.push('/users');
+    } catch (requestError) {
+      if (
+        axios.isAxiosError(requestError) &&
+        requestError.response?.status === 401
+      ) {
+        router.push('/login');
+        return;
+      }
+
+      if (axios.isAxiosError(requestError)) {
+        const serverMessage =
+          requestError.response?.data?.message ?? 'Failed to update user.';
+        setError(serverMessage);
+      } else {
+        setError('Failed to update user.');
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -70,7 +103,7 @@ const UserEdit = ({ id }: { id: number }) => {
         </div>
       )}
 
-      {!isLoading && !error && roles.length > 0 && (
+      {!isLoading && roles.length > 0 && (
         <form onSubmit={submit}>
           <div className="mb-3">
             <label className="form-label" htmlFor="first-name">
@@ -135,8 +168,12 @@ const UserEdit = ({ id }: { id: number }) => {
             </select>
           </div>
 
-          <button className="btn btn-primary" type="submit">
-            Save
+          <button
+            className="btn btn-primary"
+            disabled={isSubmitting}
+            type="submit"
+          >
+            {isSubmitting ? 'Saving...' : 'Save'}
           </button>
         </form>
       )}
