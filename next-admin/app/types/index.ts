@@ -24,3 +24,12 @@ export interface Product {
   image: string;
   price: number;
 }
+
+export interface Order {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  total: number;
+  order_items: unknown[];
+}

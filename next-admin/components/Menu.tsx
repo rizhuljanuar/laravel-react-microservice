@@ -57,6 +57,18 @@ const Menu = () => {
             Products
           </Link>
         </li>
+        <li className="nav-item">
+          <Link
+            className={
+              pathname === '/orders'
+                ? 'nav-link active'
+                : 'nav-link text-muted'
+            }
+            href="/orders"
+          >
+            Orders
+          </Link>
+        </li>
       </ul>
     </nav>
   );
