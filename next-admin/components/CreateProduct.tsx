@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import api from '@/lib/api';
 
 const CreateProduct = () => {
@@ -14,6 +14,39 @@ const CreateProduct = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [price, setPrice] = useState('');
   const [title, setTitle] = useState('');
+
+  const upload = async (event: ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+
+    if (!files) {
+      return;
+    }
+
+    const data = new FormData();
+    data.append('image', files[0]);
+
+    setError('');
+    try {
+      const response = await api.post('/upload', data);
+      setImage(response.data.url);
+    } catch (requestError) {
+      if (
+        axios.isAxiosError(requestError) &&
+        requestError.response?.status === 401
+      ) {
+        router.push('/login');
+        return;
+      }
+
+      if (axios.isAxiosError(requestError)) {
+        const serverMessage =
+          requestError.response?.data?.message ?? 'Failed to upload image.';
+        setError(serverMessage);
+      } else {
+        setError('Failed to upload image.');
+      }
+    }
+  };
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -99,6 +132,19 @@ const CreateProduct = () => {
             required
             type="text"
             value={image}
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label" htmlFor="upload-image">
+            Upload Image
+          </label>
+          <input
+            accept="image/*"
+            className="form-control"
+            id="upload-image"
+            onChange={upload}
+            type="file"
           />
         </div>
 
