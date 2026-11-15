@@ -1,10 +1,12 @@
 'use client';
 
 import axios from 'axios';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import api from '@/lib/api';
 import { User } from '@/app/types';
+
 
 const Users = () => {
   const router = useRouter();
@@ -95,6 +97,10 @@ const Users = () => {
 
       {!isLoading && !error && (
         <>
+          <Link className="btn btn-primary btn-sm mb-3" href="/users/create">
+            Add User
+          </Link>
+
           <table className="table table-striped table-hover">
             <thead>
               <tr>

@@ -14,7 +14,7 @@ class RoleController extends Controller
     {
         Gate::authorize('view', 'roles');
 
-        return Role::all();
+        return RoleResource::collection(Role::all());
     }
 
     public function show(string $id)
