@@ -1,9 +1,10 @@
 'use client';
 
 import axios from 'axios';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import api from '../lib/api';
+import api from '@/lib/api';
 import { Product } from '@/app/types';
 import Delete from './Delete';
 
@@ -68,44 +69,50 @@ const Products = () => {
       )}
 
       {!isLoading && !error && (
-        <table className="table table-striped table-hover">
-          <thead>
-            <tr>
-              <th scope="col">Title</th>
-              <th scope="col">Image</th>
-              <th scope="col">Description</th>
-              <th scope="col">Price</th>
-              <th scope="col">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((product) => {
-              return (
-                <tr key={product.id}>
-                  <td>{product.title}</td>
-                  <td>
-                    <img
-                      alt={product.title}
-                      className="img-thumbnail"
-                      src={product.image}
-                      width={100}
-                    />
-                  </td>
-                  <td>{product.description}</td>
-                  <td>{product.price}</td>
-                  <td>
-                    <Delete
-                      endpoint="products"
-                      id={product.id}
-                      onError={setError}
-                      onDelete={handleDelete}
-                    />
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <>
+          <Link className="btn btn-primary btn-sm mb-3" href="/products/create">
+            Add Product
+          </Link>
+
+          <table className="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Image</th>
+                <th scope="col">Description</th>
+                <th scope="col">Price</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {products.map((product) => {
+                return (
+                  <tr key={product.id}>
+                    <td>{product.title}</td>
+                    <td>
+                      <img
+                        alt={product.title}
+                        className="img-thumbnail"
+                        src={product.image}
+                        width={100}
+                      />
+                    </td>
+                    <td>{product.description}</td>
+                    <td>{product.price}</td>
+                    <td>
+                      <Delete
+                        endpoint="products"
+                        id={product.id}
+                        onError={setError}
+                        onDelete={handleDelete}
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </>
       )}
     </div>
   );
