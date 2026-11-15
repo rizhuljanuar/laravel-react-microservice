@@ -25,6 +25,13 @@ export interface Product {
   price: number;
 }
 
+export interface OrderItem {
+  id: number;
+  product_title: string;
+  price: number;
+  quantity: number;
+}
+
 export interface Order {
   id: number;
   first_name: string;
