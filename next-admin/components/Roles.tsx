@@ -1,6 +1,7 @@
 'use client';
 
 import axios from 'axios';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import api from '@/lib/api';
@@ -91,42 +92,48 @@ const Roles = () => {
       )}
 
       {!isLoading && !error && (
-        <table className="table table-striped table-hover">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Name</th>
-              <th scope="col">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {roles.map((role) => {
-              return (
-                <tr key={role.id}>
-                  <td>{role.id}</td>
-                  <td>{role.name}</td>
-                  <td>
-                    <div className="btn-group" role="group">
-                      <button
-                        className="btn btn-outline-primary btn-sm"
-                        type="button"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="btn btn-outline-danger btn-sm"
-                        type="button"
-                        onClick={() => del(role.id)}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <>
+          <Link className="btn btn-primary btn-sm mb-3" href="/roles/create">
+            Add Role
+          </Link>
+
+          <table className="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {roles.map((role) => {
+                return (
+                  <tr key={role.id}>
+                    <td>{role.id}</td>
+                    <td>{role.name}</td>
+                    <td>
+                      <div className="btn-group" role="group">
+                        <button
+                          className="btn btn-outline-primary btn-sm"
+                          type="button"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="btn btn-outline-danger btn-sm"
+                          type="button"
+                          onClick={() => del(role.id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </>
       )}
     </div>
   );
