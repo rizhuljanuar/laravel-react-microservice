@@ -2,15 +2,19 @@
 
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import api from '@/lib/api';
+import { setUser } from '@/redux/userSlice';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
 const Profile = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.user.user);
 
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
+  const [firstName, setFirstName] = useState(user?.first_name ?? '');
+  const [lastName, setLastName] = useState(user?.last_name ?? '');
+  const [email, setEmail] = useState(user?.email ?? '');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
 
@@ -21,21 +25,6 @@ const Profile = () => {
   const [successInfo, setSuccessInfo] = useState('');
   const [successPassword, setSuccessPassword] = useState('');
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const response = await api.get('/user');
-        setFirstName(response.data.data.first_name);
-        setLastName(response.data.data.last_name);
-        setEmail(response.data.data.email);
-      } catch {
-        // tiket mati ditangani layout secure; form cukup tetap kosong
-      }
-    };
-
-    loadData();
-  }, []);
-
   const updateInfo = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrorInfo('');
@@ -43,13 +32,13 @@ const Profile = () => {
     setIsSubmittingInfo(true);
 
     try {
-      await api.put('/users/info', {
+      const response = await api.put('/users/info', {
         first_name: firstName,
         last_name: lastName,
         email,
       });
+      dispatch(setUser(response.data));
       setSuccessInfo('Profile updated.');
-      window.dispatchEvent(new Event('user-updated'));
     } catch (requestError) {
       if (
         axios.isAxiosError(requestError) &&

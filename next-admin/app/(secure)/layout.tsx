@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import api from '../../lib/api';
-import Menu from '../../components/Menu';
-import Navigation from '../../components/Navigation';
+import api from '@/lib/api';
+import Menu from '@/components/Menu';
+import Navigation from '@/components/Navigation';
+import { setUser } from '@/redux/userSlice';
+import { useAppDispatch } from '@/redux/hooks';
 
 export default function SecureLayout({
   children,
@@ -12,13 +14,15 @@ export default function SecureLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        await api.get('/user');
+        const response = await api.get('/user');
+        dispatch(setUser(response.data.data));
         setIsAuthenticated(true);
       } catch {
         router.push('/login');
@@ -28,7 +32,7 @@ export default function SecureLayout({
     };
 
     void checkAuth();
-  }, [router]);
+  }, [dispatch, router]);
 
   if (isCheckingAuth) {
     return (

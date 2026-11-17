@@ -3,38 +3,16 @@
 import axios from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import api from '@/lib/api';
-import { User } from '@/app/types';
+import { useAppSelector } from '@/redux/hooks';
 
 const Navigation = () => {
   const router = useRouter();
+  const user = useAppSelector((state) => state.user.user);
 
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const response = await api.get('/user');
-        setUser(response.data.data);
-      } catch {
-        // tiket mati sudah ditangani layout secure; navbar cukup diam
-      }
-    };
-
-    loadData();
-
-    // Profile tidak bisa menyentuh state di sini; sinyal ini satu-satunya jalan
-    // sebelum Redux memasang gudang bersama di lesson 67 dan 68.
-    const reload = () => {
-      void loadData();
-    };
-
-    window.addEventListener('user-updated', reload);
-    return () => window.removeEventListener('user-updated', reload);
-  }, []);
 
   const logout = async () => {
     setError('');
