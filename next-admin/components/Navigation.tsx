@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import api from '@/lib/api';
 import { useAppSelector } from '@/redux/hooks';
-import { fullName } from '@/utils/user';
 
 const Navigation = () => {
   const router = useRouter();
@@ -55,7 +54,7 @@ const Navigation = () => {
 
       {user && (
         <Link className="btn btn-outline-light" href="/profile">
-          {fullName(user)}
+          {user.first_name} {user.last_name}
         </Link>
       )}
 

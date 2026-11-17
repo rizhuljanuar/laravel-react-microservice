@@ -1,9 +1,9 @@
 'use client';
 
-import api from '@/lib/api';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import api from '@/lib/api';
 
 export default function LoginPage() {
   const router = useRouter();
