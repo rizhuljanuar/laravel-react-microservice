@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './globals.css';
+import Providers from '@/components/Providers';
 
 export const metadata: Metadata = {
   title: 'Next Admin',
@@ -14,7 +15,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id">
-      <body>{children}</body>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
