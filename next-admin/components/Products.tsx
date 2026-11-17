@@ -6,10 +6,13 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import api from '@/lib/api';
 import { Product } from '@/app/types';
+import { canEdit } from '@/utils/user';
+import { useAppSelector } from '@/redux/hooks';
 import Delete from './Delete';
 
 const Products = () => {
   const router = useRouter();
+  const user = useAppSelector((state) => state.user.user);
 
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -70,9 +73,14 @@ const Products = () => {
 
       {!isLoading && !error && (
         <>
-          <Link className="btn btn-primary btn-sm mb-3" href="/products/create">
-            Add Product
-          </Link>
+          {user && canEdit(user, 'products') && (
+            <Link
+              className="btn btn-primary btn-sm mb-3"
+              href="/products/create"
+            >
+              Add Product
+            </Link>
+          )}
 
           <table className="table table-striped table-hover">
             <thead>
@@ -100,20 +108,22 @@ const Products = () => {
                     <td>{product.description}</td>
                     <td>{product.price}</td>
                     <td>
-                      <div className="btn-group" role="group">
-                        <Link
-                          className="btn btn-outline-primary btn-sm"
-                          href={`/products/${product.id}/edit`}
-                        >
-                          Edit
-                        </Link>
-                        <Delete
-                          endpoint="products"
-                          id={product.id}
-                          onError={setError}
-                          onDelete={handleDelete}
-                        />
-                      </div>
+                      {user && canEdit(user, 'products') && (
+                        <div className="btn-group" role="group">
+                          <Link
+                            className="btn btn-outline-primary btn-sm"
+                            href={`/products/${product.id}/edit`}
+                          >
+                            Edit
+                          </Link>
+                          <Delete
+                            endpoint="products"
+                            id={product.id}
+                            onError={setError}
+                            onDelete={handleDelete}
+                          />
+                        </div>
+                      )}
                     </td>
                   </tr>
                 );

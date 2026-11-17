@@ -6,11 +6,14 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import api from '@/lib/api';
 import { User } from '@/app/types';
+import { canEdit } from '@/utils/user';
+import { useAppSelector } from '@/redux/hooks';
 import Delete from './Delete';
 import Paginator from './Paginator';
 
 const Users = () => {
   const router = useRouter();
+  const user = useAppSelector((state) => state.user.user);
 
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -74,9 +77,11 @@ const Users = () => {
 
       {!isLoading && !error && (
         <>
-          <Link className="btn btn-primary btn-sm mb-3" href="/users/create">
-            Add User
-          </Link>
+          {user && canEdit(user, 'users') && (
+            <Link className="btn btn-primary btn-sm mb-3" href="/users/create">
+              Add User
+            </Link>
+          )}
 
           <table className="table table-striped table-hover">
             <thead>
@@ -90,29 +95,31 @@ const Users = () => {
               </tr>
             </thead>
             <tbody>
-              {users.map((user) => {
+              {users.map((row) => {
                 return (
-                  <tr key={user.id}>
-                    <td>{user.id}</td>
-                    <td>{user.first_name}</td>
-                    <td>{user.last_name}</td>
-                    <td>{user.email}</td>
-                    <td>{user.role?.name}</td>
+                  <tr key={row.id}>
+                    <td>{row.id}</td>
+                    <td>{row.first_name}</td>
+                    <td>{row.last_name}</td>
+                    <td>{row.email}</td>
+                    <td>{row.role?.name}</td>
                     <td>
-                      <div className="btn-group" role="group">
-                        <Link
-                          className="btn btn-outline-primary btn-sm"
-                          href={`/users/${user.id}/edit`}
-                        >
-                          Edit
-                        </Link>
-                        <Delete
-                          endpoint="users"
-                          id={user.id}
-                          onError={setError}
-                          onDelete={handleDelete}
-                        />
-                      </div>
+                      {user && canEdit(user, 'users') && (
+                        <div className="btn-group" role="group">
+                          <Link
+                            className="btn btn-outline-primary btn-sm"
+                            href={`/users/${row.id}/edit`}
+                          >
+                            Edit
+                          </Link>
+                          <Delete
+                            endpoint="users"
+                            id={row.id}
+                            onError={setError}
+                            onDelete={handleDelete}
+                          />
+                        </div>
+                      )}
                     </td>
                   </tr>
                 );
